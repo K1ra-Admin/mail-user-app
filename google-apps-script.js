@@ -1,0 +1,1 @@
+// Script untuk koneksi ke Google Sheets
