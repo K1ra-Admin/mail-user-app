@@ -1,14 +1,19 @@
+
 <!DOCTYPE html>
-<html lang="id">
-<head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Profil</title><link rel="stylesheet" href="style.css" /></head>
-<body><div class="container"><h2>Profil Saya</h2>
-<div id="profile-info">Memuat...</div>
-<h3>Update Profil</h3>
-<form id="updateForm">
-  <input type="text" id="username" placeholder="Username Baru" required />
-  <input type="text" id="leader" placeholder="Nama Leader Baru" required />
-  <button type="submit">Simpan Perubahan</button>
-</form>
-<br/><a id="toHistory" href="#">Lihat Riwayat Akun</a></div>
-<script src="script.js"></script></body></html>
+<html>
+<head>
+  <title>Profile</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h2>Profil Saya</h2>
+  <div id="profile-info"></div>
+  <form id="updateForm">
+    <input type="text" id="username" placeholder="Username"><br>
+    <input type="text" id="leader" placeholder="Leader"><br>
+    <button type="submit">Update Profil</button>
+  </form>
+  <a href="account.html">Setor Akun</a> | <a id="toHistory" href="#">Riwayat</a>
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,6 +1,18 @@
+
 const BASE_URL = "https://script.google.com/macros/s/AKfycbytkO0ccfauJUFEwQEy7xCwiMsshPv_2bjV2XvbRDd0LK0ckD9309MsEMI3SicJVvG_/exec";
 
-if (document.getElementById("registerForm")) {
+const loginForm = document.getElementById("loginForm");
+const registerForm = document.getElementById("registerForm");
+const updateForm = document.getElementById("updateForm");
+const singleAccountForm = document.getElementById("singleAccountForm");
+const email = document.getElementById("email");
+const password = document.getElementById("password");
+const username = document.getElementById("username");
+const leader = document.getElementById("leader");
+const accountEmail = document.getElementById("accountEmail");
+const accountPassword = document.getElementById("accountPassword");
+
+if (registerForm) {
   registerForm.addEventListener("submit", e => {
     e.preventDefault();
     fetch(BASE_URL, {
@@ -10,17 +22,14 @@ if (document.getElementById("registerForm")) {
         email: email.value,
         password: password.value
       }),
-      headers: {
-        "Content-Type": "application/json"
-      }
     }).then(res => res.json()).then(data => {
-      alert("Berhasil daftar! ID: " + data.id);
+      alert("Berhasil daftar!");
       location.href = "login.html";
     });
   });
 }
 
-if (document.getElementById("loginForm")) {
+if (loginForm) {
   loginForm.addEventListener("submit", e => {
     e.preventDefault();
     fetch(BASE_URL, {
@@ -30,12 +39,7 @@ if (document.getElementById("loginForm")) {
         email: email.value,
         password: password.value
       }),
-      headers: {
-        "Content-Type": "application/json"
-      }
-    })
-    .then(res => res.json())
-    .then(data => {
+    }).then(res => res.json()).then(data => {
       if (data.success) {
         localStorage.setItem("user_id", data.id);
         location.href = "profile.html";
@@ -50,31 +54,32 @@ if (document.getElementById("profile-info")) {
   const id = localStorage.getItem("user_id");
   fetch(BASE_URL, {
     method: "POST",
-    body: JSON.stringify({ action: "login", email: "", password: "", id }),
-    headers: { "Content-Type": "application/json" }
+    body: JSON.stringify({ action: "login", email: "", password: "", id })
   }).then(res => res.json()).then(data => {
-    profileInfo.innerHTML = `<p><strong>ID:</strong> ${data.id}</p><p><strong>Email:</strong> ${data.email}</p>`;
+    document.getElementById("profile-info").innerHTML = `
+      <p><strong>ID:</strong> ${data.id}</p>
+      <p><strong>Email:</strong> ${data.email}</p>
+    `;
     document.getElementById("toHistory").href = "history.html?id=" + data.id;
   });
 
-  updateForm.addEventListener("submit", e => {
-    e.preventDefault();
-    fetch(BASE_URL, {
-      method: "POST",
-      body: JSON.stringify({
-        action: "update_profile",
-        id: localStorage.getItem("user_id"),
-        username: username.value,
-        leader: leader.value
-      }),
-      headers: {
-        "Content-Type": "application/json"
-      }
-    }).then(res => res.json()).then(() => alert("Profil diperbarui!"));
-  });
+  if (updateForm) {
+    updateForm.addEventListener("submit", e => {
+      e.preventDefault();
+      fetch(BASE_URL, {
+        method: "POST",
+        body: JSON.stringify({
+          action: "update_profile",
+          id: localStorage.getItem("user_id"),
+          username: username.value,
+          leader: leader.value
+        })
+      }).then(res => res.text()).then(alert);
+    });
+  }
 }
 
-if (document.getElementById("singleAccountForm")) {
+if (singleAccountForm) {
   singleAccountForm.addEventListener("submit", e => {
     e.preventDefault();
     fetch(BASE_URL, {
@@ -84,11 +89,8 @@ if (document.getElementById("singleAccountForm")) {
         id: localStorage.getItem("user_id"),
         accountEmail: accountEmail.value,
         accountPassword: accountPassword.value
-      }),
-      headers: {
-        "Content-Type": "application/json"
-      }
-    }).then(res => res.json()).then(() => alert("Akun berhasil dikirim!"));
+      })
+    }).then(res => res.text()).then(alert);
   });
 }
 
@@ -104,8 +106,12 @@ if (document.getElementById("history-container")) {
         return;
       }
       data.forEach(item => {
-        const icon = item.status === "✅" ? "✔️" : item.status === "❌" ? "❌" : "⏳";
-        container.innerHTML += `<p><strong>Email:</strong> ${item.email}</p><p><strong>Status:</strong> ${icon}</p><hr/>`;
+        const statusIcon = item.status === "✅" ? "✔️" : item.status === "❌" ? "❌" : "⏳";
+        const div = document.createElement("div");
+        div.innerHTML = `<p><strong>Email:</strong> ${item.email}</p><p><strong>Status:</strong> ${statusIcon}</p><hr/>`;
+        container.appendChild(div);
       });
+    }).catch(() => {
+      document.getElementById("history-container").innerHTML = "<p>Gagal memuat data.</p>";
     });
 }
